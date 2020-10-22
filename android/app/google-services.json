@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "541139925304",
+    "firebase_url": "https://hashtri-5041d.firebaseio.com",
+    "project_id": "hashtri-5041d",
+    "storage_bucket": "hashtri-5041d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541139925304:android:a2f6a5a0c83dfe1e9229cd",
+        "android_client_info": {
+          "package_name": "com.geekyrabie.hashtri"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "541139925304-aadcdh6tb9oflgafdudbp23qda9qta26.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8yoZv6FQsibEL3n9MGSzXJIXIpM2AAmA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "541139925304-aadcdh6tb9oflgafdudbp23qda9qta26.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
