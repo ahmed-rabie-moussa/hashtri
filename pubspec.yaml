@@ -24,6 +24,10 @@ dependencies:
 
   cupertino_icons: ^1.0.0
 
+  #The dot indicator of the page View
+  page_view_indicator: ^2.0.4
+  #Shared preferences
+  shared_preferences: ^0.5.12
 dev_dependencies:
   flutter_test:
     sdk: flutter

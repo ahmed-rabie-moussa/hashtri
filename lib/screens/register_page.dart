@@ -1,9 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hashtri/widgets/custom_button.dart';
-import 'package:hashtri/widgets/custom_input_field.dart';
-
-import '../constants.dart';
+import 'package:hashtri/constants.dart';
+import 'package:hashtri/widgets/custom_btn.dart';
+import 'package:hashtri/widgets/custom_input.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -11,19 +10,34 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  bool _formIsLoading = false;
+  // Build an alert dialog to display some errors.
+  Future<void> _alertDialogBuilder(String error) async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Container(
+              child: Text(error),
+            ),
+            actions: [
+              FlatButton(
+                child: Text("Close Dialog"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        });
+  }
 
-  String _registerEmail = "";
-  String _registerPassword = "";
-
-  FocusNode _passwordFocusNode;
-
-  //create a new Account from firebase
-  Future<String> _createNewAccount() async {
+  // Create a new user account
+  Future<String> _createAccount() async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: _registerEmail, password: _registerPassword);
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _registerEmail, password: _registerPassword);
       return null;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -37,46 +51,38 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  //this is an alert dialog to show if there is an error
-  Future<void> _alertDialogBuilder(String errorMessage) async {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Error"),
-            content: Container(
-              child: Text(errorMessage),
-            ),
-            actions: [
-              FlatButton(
-                child: Text("Close dialog"),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          );
-        });
-  }
-
   void _submitForm() async {
+    // Set the form to loading state
     setState(() {
-      _formIsLoading = true;
+      _registerFormLoading = true;
     });
-    String createAccountResult = await _createNewAccount();
-    if (createAccountResult != null) {
-      _alertDialogBuilder(createAccountResult);
+
+    // Run the create account method
+    String _createAccountFeedback = await _createAccount();
+
+    // If the string is not null, we got error while create account.
+    if (_createAccountFeedback != null) {
+      _alertDialogBuilder(_createAccountFeedback);
+
+      // Set the form to regular state [not loading].
       setState(() {
-        _formIsLoading = false;
+        _registerFormLoading = false;
       });
     } else {
-      setState(() {
-        _formIsLoading = false;
-      });
+      // The String was null, user is logged in.
       Navigator.pop(context);
     }
   }
+
+  // Default Form Loading State
+  bool _registerFormLoading = false;
+
+  // Form Input Field Values
+  String _registerEmail = "";
+  String _registerPassword = "";
+
+  // Focus Node for input fields
+  FocusNode _passwordFocusNode;
 
   @override
   void initState() {
@@ -100,9 +106,11 @@ class _RegisterPageState extends State<RegisterPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: EdgeInsets.only(top: 30),
+                padding: EdgeInsets.only(
+                  top: 24.0,
+                ),
                 child: Text(
-                  "Create Account,",
+                  "Create A New Account",
                   textAlign: TextAlign.center,
                   style: Constants.boldHeading,
                 ),
@@ -110,7 +118,7 @@ class _RegisterPageState extends State<RegisterPage> {
               Column(
                 children: [
                   CustomInput(
-                    hintText: "UserName",
+                    hintText: "Email...",
                     onChanged: (value) {
                       _registerEmail = value;
                     },
@@ -120,31 +128,31 @@ class _RegisterPageState extends State<RegisterPage> {
                     textInputAction: TextInputAction.next,
                   ),
                   CustomInput(
-                    hintText: "Password",
-                    focusNode: _passwordFocusNode,
+                    hintText: "Password...",
                     onChanged: (value) {
                       _registerPassword = value;
                     },
+                    focusNode: _passwordFocusNode,
+                    isPasswordField: true,
                     onSubmitted: (value) {
                       _submitForm();
                     },
-                    textInputAction: TextInputAction.done,
-                    isPasswordField: true,
                   ),
-                  CustomButton(
+                  CustomBtn(
                     text: "Create New Account",
                     onPressed: () {
                       _submitForm();
                     },
-                    outlineBtn: false,
-                    isloading: _formIsLoading,
+                    isLoading: _registerFormLoading,
                   )
                 ],
               ),
               Padding(
-                padding: EdgeInsets.only(bottom: 16),
-                child: CustomButton(
-                  text: "Back to Login",
+                padding: const EdgeInsets.only(
+                  bottom: 16.0,
+                ),
+                child: CustomBtn(
+                  text: "Back To Login",
                   onPressed: () {
                     Navigator.pop(context);
                   },

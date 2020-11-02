@@ -13,47 +13,52 @@ class LandingPage extends StatelessWidget {
     return FutureBuilder(
       future: _initialization,
       builder: (context, snapshot) {
-        //Error in connection to firebase
+        // If Firebase App init, snapshot has error
         if (snapshot.hasError) {
           return Scaffold(
-            body: Container(
-              child: Center(
-                child: Text("Error: ${snapshot.error}"),
-              ),
+            body: Center(
+              child: Text("Error: ${snapshot.error}"),
             ),
           );
         }
 
-        //Connection to database has done completely
+        // Connection Initialized - Firebase App is running
         if (snapshot.connectionState == ConnectionState.done) {
-          //the stream builder check that login state is alive
+          // StreamBuilder can check the login state live
           return StreamBuilder(
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, streamSnapshot) {
-              //if the stream snapshot has an error
+              // If Stream Snapshot has error
               if (streamSnapshot.hasError) {
                 return Scaffold(
-                  body: Container(
-                    child: Center(
-                      child: Text("Error: ${streamSnapshot.error}"),
-                    ),
+                  body: Center(
+                    child: Text("Error: ${streamSnapshot.error}"),
                   ),
                 );
               }
 
+              // Connection state active - Do the user login check inside the
+              // if statement
               if (streamSnapshot.connectionState == ConnectionState.active) {
-                User user = streamSnapshot.data;
-                if (user == null) {
+                // Get the user
+                User _user = streamSnapshot.data;
+
+                // If the user is null, we're not logged in
+                if (_user == null) {
+                  // user not logged in, head to login
                   return LoginPage();
-                } else
+                } else {
+                  // The user is logged in, head to homepage
                   return HomePage();
+                }
               }
 
-              // Checking the authentication state
+              // Checking the auth state - Loading
               return Scaffold(
-                body: Container(
-                  child: Center(
-                    child: Text("Checking authentication ..."),
+                body: Center(
+                  child: Text(
+                    "Checking Authentication...",
+                    style: Constants.regularHeading,
                   ),
                 ),
               );
@@ -61,11 +66,12 @@ class LandingPage extends StatelessWidget {
           );
         }
 
-        // connectiong to firebase loading
+        // Connecting to Firebase - Loading
         return Scaffold(
-          body: Container(
-            child: Center(
-              child: Text("Initialization App ..."),
+          body: Center(
+            child: Text(
+              "Initialization App...",
+              style: Constants.regularHeading,
             ),
           ),
         );

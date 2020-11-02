@@ -4,18 +4,23 @@ import 'package:hashtri/screens/product_page.dart';
 import 'package:hashtri/services/firebase_services.dart';
 import 'package:hashtri/widgets/custom_action_bar.dart';
 
-class SavedTab extends StatelessWidget {
-  final FirebaseServices _firebaseServices = FirebaseServices();
+class CartPage extends StatefulWidget {
+  @override
+  _CartPageState createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  FirebaseServices _firebaseServices = FirebaseServices();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Stack(
+    return Scaffold(
+      body: Stack(
         children: [
           FutureBuilder<QuerySnapshot>(
             future: _firebaseServices.usersRef
                 .doc(_firebaseServices.getUserId())
-                .collection("Saved")
+                .collection("Cart")
                 .get(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
@@ -77,7 +82,7 @@ class SavedTab extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(8.0),
                                       child: Image.network(
                                         "${_productMap['images'][0]}",
-                                        fit: BoxFit.cover,
+                                        fit: BoxFit.fill,
                                       ),
                                     ),
                                   ),
@@ -147,9 +152,9 @@ class SavedTab extends StatelessWidget {
             },
           ),
           CustomActionBar(
-            title: "Saved",
-            hasBackArrrow: false,
-          ),
+            hasBackArrrow: true,
+            title: "Cart",
+          )
         ],
       ),
     );

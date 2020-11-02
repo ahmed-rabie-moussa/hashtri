@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hashtri/services/firebase_services.dart';
 import 'package:hashtri/tabs/home_tab.dart';
 import 'package:hashtri/tabs/saved_tab.dart';
 import 'package:hashtri/tabs/search_tab.dart';
-import 'package:hashtri/widgets/custom_bottom_tabs.dart';
+import 'package:hashtri/widgets/bottom_tabs.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,6 +11,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  FirebaseServices _firebaseServices = FirebaseServices();
+
   PageController _tabsPageController;
   int _selectedTab = 0;
 
@@ -28,16 +31,15 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-          child: Expanded(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
             child: PageView(
               controller: _tabsPageController,
-              onPageChanged: (pageNum) {
+              onPageChanged: (num) {
                 setState(() {
-                  _selectedTab = pageNum;
+                  _selectedTab = num;
                 });
               },
               children: [
@@ -47,22 +49,17 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-        ),
-        Container(
-          child: Center(
-            child: BottomTabs(
-              selectedTab: _selectedTab,
-              tabPressed: (tabPressed) {
-                setState(() {
-                  _tabsPageController.animateToPage(tabPressed,
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.easeInCubic);
-                });
-              },
-            ),
+          BottomTabs(
+            selectedTab: _selectedTab,
+            tabPressed: (num) {
+              _tabsPageController.animateToPage(
+                  num,
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeOutCubic);
+            },
           ),
-        )
-      ],
-    ));
+        ],
+      ),
+    );
   }
 }
